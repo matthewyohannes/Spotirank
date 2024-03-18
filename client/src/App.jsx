@@ -13,13 +13,13 @@ const App = () => {
   const checkLoggedIn = async () => {
     try {
       // check if the user is logged in by making a request to Flask backend's checkLoggedIn endpoint
-      const response = await fetch("/checkLoggedIn");
+      const response = await fetch("https://spotirank.onrender.com/checkLoggedIn");
       if (response.ok) {
         setLoggedIn(true);
         // if user is logged in, fetch top artists
         fetchTopArtists();
       } else if (response.status === 401) {
-        // If unauthorized, redirect to login page
+        // if unauthorized, redirect to login page
         window.location.href = "https://spotirank.onrender.com/refresh-token";
       }
     } catch (error) {
@@ -30,7 +30,7 @@ const App = () => {
   const fetchTopArtists = async () => {
     try {
       // fetch top artists data from Flask backend
-      const response = await fetch("/topartists");
+      const response = await fetch("https://spotirank.onrender.com/topartists");
       if (response.ok) {
         const data = await response.json();
         setTopArtists(data.items);
@@ -39,10 +39,7 @@ const App = () => {
       console.error("Error fetching top artists:", error);
     }
   };
-  const handleLogin = async () => {
-    // redirect the user to the login route on your Flask backend
-    window.location.href = "http://localhost:5000/login";
-  };
+  
 
   const artistInfo = topArtists.map((person) => (
     <li key={person.id}>

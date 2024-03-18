@@ -88,7 +88,7 @@ def callback():
         session['refresh_token'] = token_info['refresh_token']
         session['expires_at'] = datetime.now().timestamp() + 10  # sets time that token will expire
 
-        return redirect('https://spotirank.onrender.com/')  # Replace this with the deployed frontend URL
+        return redirect('/')  # Replace this with the deployed frontend URL
 
 @app.route('/topartists')
 def get_topartists():
@@ -130,7 +130,7 @@ def refresh_token():
         session['access_token'] = new_token_info['access_token']
         session['expires_at'] = datetime.now().timestamp() + 10
 
-        return redirect('https://spotirank.onrender.com/')  # Replace this with the deployed frontend URL
+        return redirect('/')  # Replace this with the deployed frontend URL
 
 @app.route('/checkLoggedIn')
 def check_logged_in():
