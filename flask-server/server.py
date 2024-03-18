@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 
 from datetime import datetime, timedelta
-from flask import Flask, redirect, request, jsonify, session
+from flask import Flask, redirect, request, jsonify, session, send_from_directory
 from flask_cors import CORS
 
 load_dotenv()
@@ -29,9 +29,9 @@ API_BASE_URL = 'https://api.spotify.com/v1/'
 
 
 @app.route('/')
-def index():
-    
-    return "Welcome to my Spotify App <a href='/login'> Login with Spotify</a>"
+def serve_frontend():
+    # path to frontend build directory
+    return send_from_directory('../client/build', 'index.html')
 
 
 @app.route('/login')
