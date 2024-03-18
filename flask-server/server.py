@@ -30,14 +30,13 @@ def index():
 
 # This route will catch all other paths and serve the appropriate static file
 # or the index.html file if the path doesn't match any static file
-@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
     file_path = os.path.join(app.static_folder, path)
     if os.path.isfile(file_path):
         return send_file(file_path)
     else:
-        return app.send_static_file('index.html')
+        return "Not Found", 404
 
 
 
