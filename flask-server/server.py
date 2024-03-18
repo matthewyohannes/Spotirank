@@ -6,13 +6,13 @@ import os
 from dotenv import load_dotenv
 
 from datetime import datetime, timedelta
-from flask import Flask, redirect, request, jsonify, session, send_file
+from flask import Flask, redirect, request, jsonify, session, send_file, send_from_directory
 from flask_cors import CORS
 
 load_dotenv()
 
 app = Flask(__name__, static_folder="../client/build", static_url_path='/')
-CORS(app, origins='https://spotirank.onrender.com/')  # Replace this with the deployed URL origin
+CORS(app, origins='https://spotirank.onrender.com/')  # replace this with the deployed URL origin
 
 CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET')
@@ -30,13 +30,13 @@ def index():
 
 # This route will catch all other paths and serve the appropriate static file
 # or the index.html file if the path doesn't match any static file
+@app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    file_path = os.path.join(app.static_folder, path)
-    if os.path.isfile(file_path):
-        return send_file(file_path)
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
     else:
-        return "Not Found", 404
+        return app.send_static_file('index.html')
 
 
 
@@ -144,5 +144,5 @@ def check_logged_in():
     return jsonify({'loggedIn': False}), 401
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))  # Get the port from the environment variable or use 5000 as a default
+    port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
