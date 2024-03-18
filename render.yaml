@@ -1,9 +1,9 @@
 services:
   - name: spotirank-backend
     env: python3
-    buildCommand: pip3 install -r requirements.txt
-    startCommand: gunicorn -b :$PORT server:app
+    buildCommand: pip3 install -r flask-server/requirements.txt
+    startCommand: gunicorn -b :$PORT flask-server.server:app
 
   - name: spotirank-frontend
-    buildCommand: npm run build
-    staticPublishPath: dist
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: client/build
