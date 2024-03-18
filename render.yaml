@@ -1,5 +1,9 @@
 services:
-  - name: spotirank
+  - name: spotirank-backend
     env: python3
     buildCommand: pip3 install -r requirements.txt
-    startCommand: python3 server.py
+    startCommand: gunicorn -b :$PORT server:app
+
+  - name: spotirank-frontend
+    buildCommand: npm run build
+    staticPublishPath: dist
