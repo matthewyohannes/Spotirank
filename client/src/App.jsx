@@ -20,7 +20,7 @@ const App = () => {
         fetchTopArtists();
       } else if (response.status === 401) {
         // If unauthorized, redirect to login page
-        window.location.href = "http://localhost:5000/refresh-token";
+        window.location.href = "https://spotirank.onrender.com/refresh-token";
       }
     } catch (error) {
       console.error("Error checking login status:", error);

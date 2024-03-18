@@ -12,13 +12,13 @@ from flask_cors import CORS
 load_dotenv()
 
 app = Flask(__name__, static_folder="../client/build", static_url_path='/')
-CORS(app, origins='http://localhost:5173')  # Replace this with the deployed URL origin
+CORS(app, origins='https://spotirank.onrender.com/')  # Replace this with the deployed URL origin
 
 CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
 CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET')
 app.secret_key = os.environ.get('APP_SECRET_KEY')
 
-REDIRECT_URI = 'http://localhost:5000/callback'  # Replace this with the deployed URL/callback path
+REDIRECT_URI = 'https://spotirank.onrender.com/callback'  # Replace this with the deployed URL/callback path
 
 AUTH_URL = 'https://accounts.spotify.com/authorize'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
@@ -88,7 +88,7 @@ def callback():
         session['refresh_token'] = token_info['refresh_token']
         session['expires_at'] = datetime.now().timestamp() + 10  # sets time that token will expire
 
-        return redirect('http://localhost:5173')  # Replace this with the deployed frontend URL
+        return redirect('https://spotirank.onrender.com/')  # Replace this with the deployed frontend URL
 
 @app.route('/topartists')
 def get_topartists():
@@ -130,7 +130,7 @@ def refresh_token():
         session['access_token'] = new_token_info['access_token']
         session['expires_at'] = datetime.now().timestamp() + 10
 
-        return redirect('http://localhost:5173')  # Replace this with the deployed frontend URL
+        return redirect('https://spotirank.onrender.com/')  # Replace this with the deployed frontend URL
 
 @app.route('/checkLoggedIn')
 def check_logged_in():
