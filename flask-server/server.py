@@ -6,12 +6,12 @@ import os
 from dotenv import load_dotenv
 
 from datetime import datetime, timedelta
-from flask import Flask, redirect, request, jsonify, session, send_from_directory
+from flask import Flask, redirect, request, jsonify, session, send_file
 from flask_cors import CORS
 
 load_dotenv()
 
-app = Flask(__name__, static_folder="../build", static_url_path='/')
+app = Flask(__name__, static_folder="../client/build", static_url_path='/')
 CORS(app, origins='http://localhost:5173')  # Replace this with the deployed URL origin
 
 CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
@@ -33,10 +33,13 @@ def index():
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    if path != "" and os.path.exists(app.static_folder + '/' + path):
-        return send_from_directory(app.static_folder, path)
+    file_path = os.path.join(app.static_folder, path)
+    if os.path.isfile(file_path):
+        return send_file(file_path)
     else:
         return app.send_static_file('index.html')
+
+
 
 @app.route('/login')
 def login():
