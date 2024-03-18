@@ -2,25 +2,26 @@ import requests
 import urllib.parse
 import base64
 import json
+import os
+from dotenv import load_dotenv
 
 from datetime import datetime, timedelta
 from flask import Flask, redirect, request, jsonify, session
 from flask_cors import CORS
-from credentials import MY_CLIENT_ID, MY_CLIENT_SECRET, MY_APP_SECRET_KEY
 
-
+load_dotenv()
 
 app = Flask(__name__)
 CORS(app, origins='http://localhost:5173')
-app.secret_key = MY_APP_SECRET_KEY # replace w/ a secret key similar to this 7e1b8d3f-4a2c-8e5d-3bfb-0c2a5d1e4f7e
 
 
 
+CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID')
+CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET')
+app.secret_key = os.environ.get('APP_SECRET_KEY')
 
 
-CLIENT_ID = MY_CLIENT_ID # replace with CLIENTID given after creating a Spotify App on dev spotify website
-CLIENT_SECRET = MY_CLIENT_SECRET # replace with CLIENTSECRET given after creating a Spotify App on dev spotify website
-REDIRECT_URI = 'http://localhost:5000/callback' # replace with your localhost port url(if different) for your flask/python server.py
+REDIRECT_URI = 'http://localhost:5000/callback' # replace with deployed port
 
 AUTH_URL = 'https://accounts.spotify.com/authorize'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
@@ -100,9 +101,8 @@ def get_topartists():
         'Authorization': f"Bearer {session['access_token']}" # headers for using get request to fetch access token
     }
     
-    response = requests.get(API_BASE_URL + 'me/top/artists?time_range=short_term&limit=10', headers=headers) # fetches playlists
+    response = requests.get(API_BASE_URL + 'me/top/artists?time_range=short_term&limit=15', headers=headers) # fetches playlists
     topartists = response.json()
-    artists = topartists['items']
 
 
     # for artist in artists: # loops through artsits inside of the `items` object array of returned data
@@ -111,6 +111,7 @@ def get_topartists():
 
 @app.route('/refresh-token')
 def refresh_token():
+    print("inside refresh token")
     if 'refresh_token' not in session: # checks if refresh token ever got stored, if not then login
         return redirect('/login')
 
@@ -130,19 +131,21 @@ def refresh_token():
         session['access_token'] = new_token_info['access_token']
         session['expires_at'] = datetime.now().timestamp() + new_token_info['expires_in']
 
-        return redirect('/playlists')
+        return redirect('http://localhost:5173')
     
 @app.route('/checkLoggedIn')
 def check_logged_in():
+    # print(session.get('access_token'))
     if 'access_token' in session and 'expires_at' in session:
-        # Check if the access token is present and hasn't expired
+        # check if the access token is present and hasn't expired
         if datetime.now().timestamp() < session['expires_at']:
-            # User is logged in
+            # user is logged in
             return jsonify({'loggedIn': True}), 200
-    # User is not logged in
+    # user is not logged in
+    # print("not logged in")
     return jsonify({'loggedIn': False}), 401
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', debug=False)
 

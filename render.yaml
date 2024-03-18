@@ -1,0 +1,5 @@
+services:
+  - name: spotirank
+    env: python3
+    buildCommand: pip3 install -r requirements.txt
+    startCommand: python3 server.py
